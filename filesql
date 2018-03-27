@@ -1,0 +1,48 @@
+var sql = require("mssql");
+var dbConfig = {
+    server: "SRINIVAS-1601\\MSSQLEXPRESS",
+    database: "SampleDB",
+    user: "sa",
+    password: "123",
+  port:1433
+};
+
+function getEmp()
+ {
+    //var con = new sql.Connection(dbConfig);
+
+    //var req = new sql.Request(con);
+
+    //con.connect(function (err) {
+    //    if (err) {
+    //        console.log(err);
+    //        return;
+    //    }
+    //    req.query("SELECT * FROM tblEmployee",function (err,recset) {
+    //        if (err) {
+    //            console.log(err);
+    //        }
+    //        else {
+    //            console.log(recset);
+    //        }
+    //        con.close();
+    //    });
+    //});
+
+    var con = new sql.Connection(dbConfig);
+    con.connect().then(function () {
+        var req = new sql.Request(con);
+        req.query("SELECT * FROM tblEmployee").then(function (recset) {
+            console.log(recset);
+            con.close();
+        })
+.catch(function (err) {
+            console.log(err);
+            con.close();
+        });
+    })
+.catch(function (err) {
+    console.log(err);
+});
+}
+getEmp();
