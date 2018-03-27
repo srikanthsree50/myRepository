@@ -1,0 +1,124 @@
+var http = require("http");
+var stringbuilder = require("stringbuilder");
+var qs = require("querystring");
+
+var port = 9000;
+
+function getHome(req, res) {
+ 
+    res.writeHead(200, { "Content-Type": "text/html" });
+  res.write("<html><head><title>Home</title></head><body><a href='/calc'>Click here</a></body></html>");
+   res.end();
+    }
+
+function getCalchtml(req, res,data) {
+    var sb = new stringbuilder({ newline: "\r\n" });
+    sb.appendLine("<html>");
+    sb.appendLine("<body>");
+    sb.appendLine("<form method='post'>");
+    sb.appendLine("<table>");
+    sb.appendLine("<tr>");
+    sb.appendLine("<td>Enter Firstno :</td>");
+    if (data && data.txtfn) {
+        sb.appendLine("<td><input type='text' id='txtfn' name='txtfn' value='{0}'></td>",data.txtfn);
+    }
+    else {
+        sb.appendLine("<td><input type='text' id='txtfn' name='txtfn' value=''></td>");
+    }
+    sb.appendLine("</tr>");
+    sb.appendLine("<tr>");
+    sb.appendLine("<td>Enter Secondno :</td>");
+    if (data && data.txtfn) {
+        sb.appendLine("<td><input type='text' id='txtsn' name='txtsn' value='{0}'></td>",data.txtsn);
+    }
+    else {
+        sb.appendLine("<td><input type='text' id='txtsn' name='txtsn' value=''></td>");
+    }
+    sb.appendLine("</tr>");
+    sb.appendLine("<tr>");
+    sb.appendLine("<td><input type='submit' id='btn' name='btn' value='Sum'></td>");
+    sb.appendLine("</tr>");
+    if (data && data.txtfn && data.txtsn) {
+        var sum = parseInt(data.txtfn) + parseInt(data.txtsn);
+        sb.appendLine("<tr>");
+        sb.appendLine("<td>sum : {0}</td>", sum);
+        sb.appendLine("</tr>");
+    }
+   
+    sb.appendLine("</table>");
+    sb.appendLine("</form>");
+    sb.appendLine("</body>");
+    sb.appendLine("</html>");
+
+    sb.build(function (err,result) {
+      
+        res.write(result);
+        res.end();
+    });
+}
+function getCalcForm(req, res, formdata) {
+    res.writeHead(200, { "Content-Type": "text/html" });
+    getCalchtml(req, res, formdata);
+};
+
+
+function get404(req, res) {
+    
+    res.writeHead(404,"Resource Not Found", { "Content-Type": "text/html" });
+    res.write("<html><head><title>404 not found</title></head><body><h1>404 resource not found</h1><a href='/'>home</a></body></html>");
+    res.end();
+}
+
+function get405(req, res) {
+    
+    res.writeHead(405, "Invalid Format",{ "Content-Type": "text/html" });
+    res.write("<html><head><title>405  Invalid</title></head><body>405 Not Valid Format <a href='/'>home</a></body></html>");
+    res.end();
+}
+
+    http.createServer(function (req, res) {
+    switch (req.method) {
+       
+        case "GET":
+            if (req.url === "/") {
+                getHome(req, res);
+            }
+            else if (req.url === "/calc") {
+       
+                    getCalcForm(req, res);
+                  }
+            else
+                {
+                 get404(req, res);
+                }
+            break;
+        case "POST":
+            if (req.url === "/calc") {
+                var reqbody = '';
+                req.on('data', function (data) {
+                    reqbody += data;
+                    if (reqbody.length > 1e7) {
+                        res.writeHead(413,"Too large File", { "Content-Type": "text/html" });
+                        res.write("<html><head><title>Home</title></head><body>413  file exceeded length</body></html>");
+                        res.end();
+                    }
+                });
+                req.on('end', function (data) {
+                    var formdata = qs.parse(reqbody);
+                    getCalchtml(req, res, formdata);
+                  //  console.log(reqbody);
+                    });
+            }
+            else {
+                get404(req, res);
+            }
+            break;
+        default:
+            get405(req, res);
+            break;
+    } 
+
+   
+
+}).listen(port);
+console
