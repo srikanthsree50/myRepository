@@ -1,0 +1,23 @@
+
+var net = require("net");
+
+var server = net.createServer()
+
+server.on("connection", function (socket) {
+    var remoteAddress = socket.remoteAddress + " " + socket.remotePort;
+    console.log("new connection is made......%s", remoteAddress);
+    
+    server.on("data", function (d) {
+        console.log("data......%s", d);
+    });
+    server.once("close", function () {
+        
+    });
+    server.on("error", function () {
+        
+    });
+});
+
+server.listen(9000, function () {
+    console.log("server starts listening......%j", server.address());
+});
