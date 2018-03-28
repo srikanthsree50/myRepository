@@ -13,6 +13,8 @@ password:"123",
 port:1433
 };
 
+exports.httpMsgsFormat="HTML";
+
 ///db.js......>>
 var sqlDb = require("mssql");
 var settings =("../settings");
@@ -153,3 +155,7 @@ http.createServer(function (req, res) {
 
 app.JS.............>>>
 require("./core/server");
+------------------------------------------->>>>>>>>>>>>>>>>>>CORE
+httpMsgs.js
+
+var settings = require("../settings");
