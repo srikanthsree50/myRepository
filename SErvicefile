@@ -1,0 +1,155 @@
+
+under Core Folder...>>>>>>>>>>>>
+
+require..mssql
+
+////settings.js-->
+
+exports.dbconfig{
+server:"localhost",
+database:"sample",
+user:"sa",
+password:"123",
+port:1433
+};
+
+///db.js......>>
+var sqlDb = require("mssql");
+var settings =("../settings");
+exports.executeSql =function(sql,callback){
+
+   var con = new sql.Connection(settings.dbConfig);
+//    con.connect().then(function () {
+//        var req = new sqlDb.Request(con);
+//        req.query(sql).then(function (recset) {
+//            callback(recset);
+//   
+//        })
+//.catch(function (err) {
+//            console.log(err);
+//             callback(null,err);
+//        });
+//    })
+//.catch(function (err) {
+//    console.log(err);
+  callback(null,err);
+//});
+};
+
+//////////CONTROLLERS FOLDER...>>>>
+
+employee.js...>>
+
+var db=require("../core/db");
+
+exports.getlist = function(req,resp)
+{
+db.executeSql("SELECT * FROM tblEmployee"function(data,err){ 
+if(err)
+{
+resp.writeHead(500," internal eroor", { "Content-Type": "text/html" });
+    resp.write("<html><head><title>Home</title></head><body>500 "+err+"</body></html>");
+}
+else
+{
+resp.writeHead(200, { "Content-Type": "application/json" });
+    resp.write(JSON.stringify(data));
+}
+    resp.end();
+});
+};
+exports.getbyId = function(req,resp,empid)
+{
+
+};
+exports.insert = function(req,resp,reqbody)
+{
+
+};
+exports.update = function(req,resp,reqbody)
+{
+
+};
+exports.delete = function(req,resp,reqbody)
+{
+
+};
+
+
+////////server.js.........>>>>
+
+var http =require("http");
+
+var emp=require("../controllers/employee.js");
+
+var settings=require("../settings");
+
+
+http.createServer(function (req, res) {
+    switch (req.method) {
+       
+       case "GET": 
+        if (req.url === "/") {
+            res.end();
+            }
+            else if (req.url === "/employees") {
+                emp.getlist(req,res);
+            }
+            break;
+        case "POST":
+            break;
+             case "PUT": 
+            break;
+        case "DELETE":
+            break;
+            
+        default:
+            break;
+       -------------------------------------------------------------------------------UNCHANGED STATUS
+        case "GET":
+            if (req.url === "/") {
+                getHome(req, res);
+            }
+            else if (req.url === "/calc") {
+                
+                getCalcForm(req, res);
+            }
+            else {
+                get404(req, res);
+            }
+            break;
+        case "POST":
+            if (req.url === "/calc") {
+                var reqbody = '';
+                req.on('data', function (data) {
+                    reqbody += data;
+                    if (reqbody.length > 1e7) {
+                        res.writeHead(413, "Too large File", { "Content-Type": "text/html" });
+                        res.write("<html><head><title>Home</title></head><body>413  file exceeded length</body></html>");
+                        res.end();
+                    }
+                });
+                req.on('end', function (data) {
+                    var formdata = qs.parse(reqbody);
+                    getCalchtml(req, res, formdata);
+                  //  console.log(reqbody);
+                });
+            }
+            else {
+                get404(req, res);
+            }
+            break;
+        default:
+            get405(req, res);
+            break;
+            -----------------------------------------------------------------------------------
+    }
+
+   
+
+}).listen(settings.webPort,function(){
+ console.log(settings.webPort);
+});
+
+app.JS.............>>>
+require("./core/server");
