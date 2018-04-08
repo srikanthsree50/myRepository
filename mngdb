@@ -1,0 +1,104 @@
+###INSERT DATA 
+db.students.insert(
+[
+{
+  "studentno":"2",
+  "firstname":"rahul",
+  "lastname":"raj",
+  "age":"38"
+  },
+  {
+  "studentno":"3",
+  "firstname":"bhanu",
+  "lastname":"reddy",
+  "age":"24"
+  },
+  {
+  "studentno":"4",
+  "firstname":"soundarya",
+  "lastname":"reddy",
+  "age":"18"
+  },
+  {
+  "studentno":"5",
+  "firstname":"manasa",
+  "lastname":"rag",
+  "age":"28"
+  }
+  ]
+)
+
+###################### DISPLAY FIRST RECORD
+
+db.students.findOne()
+#############
+###Particular Record  Queryyyy
+
+db.students.find({"age":"28"})
+####BASED ON (greaterthan)GTE+(lessthan)LTE+(notequalto)NE CONDITION##
+db.students.find({"age":{$gt:"28"}})
+#####
+BASED ON ##AND(, kama) +  OR OPERATORS###
+db.students.find(
+{"age":"28","studentno":"1"}
+)===>>AND
+
+db.students.find(
+{
+$or : [{"age":"28"},{"studentno":"1"}]
+}
+)===>>OR
+#########
+
+db.students.find(
+{
+  "firstname":"srikanth", $or : [{"age":"28"},{"studentno":"1"}]
+}
+)===>>AND+OR
+
+###UPDATE ONE.RECORD..#########
+db.students.update(
+{"_id": ObjectId("5ac9d427db689523a5c825f0")},
+{$set : {"studentno":"1"}}
+)
+###UPDATE MANY RECORDS####
+db.students.update(
+{"age": ObjectId("38")},
+{$set : {"studentno":"1"}},
+{multi:true}
+)
+#####INSERT and UpDATE using SAVE COMMAND####
+db.students.save(
+{"studentno":"2",
+  "firstname":"rahul",
+  "lastname":"raj",
+  "age":"3"}
+)==>>saving uncommon data
+####DELETE a DOCUMENT########
+db.students.remove()==>>removes all documents...
+db.students.remove(
+{
+"studentno:"2"
+},1
+)==>>removes one particular document even matching multiples
+
+####PROJECTION ##########
+db.students.find({},{"studentno":1,"_id":0})
+######LIMIT#########
+db.students.find({},{"studentno":1,"_id":0}).limit(3)
+######SKIP####skips records
+db.students.find({},{"studentno":1,"_id":0}).skip(3)
+######SORTING#####
+db.students.find({},{"studentno":1,"_id":0}).sort({"age":1})====in ascending order
+#####INDEXING##########
+CREATING INDEX.............................
+db.students.ensureIndex({"studentno":1})
+DROPPING INDEX.....................................
+db.students.dropIndex({"studentno":1})
+----------------------------------------------------------
+#####AGGREGATION==>>>GROUPING#####
+db.students.aggregate([{$group:(_id:"$gender",myres : ($sum : 1))}]).....GROUPS genders sum
+
+$max $sum $min 
+--------------------------------------------------------------
+
