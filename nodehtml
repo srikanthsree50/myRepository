@@ -1,0 +1,56 @@
+######INDEX.JS#########################
+var fs= require('fs');
+var http = require('http');
+
+http.createServer(function(req,res){
+    console.log('requested url is : '+ req.url);
+    if(req.url === '/home'||  req.url === '/')
+    {
+        res.writeHead(200,{'Content-Type':'text/html'});
+        fs.createReadStream('Index.html').pipe(res);
+    }
+    else if( req.url === '/api')
+    {
+        res.writeHead(200,{'Content-Type':'application/json'});
+        var JsObj =
+        {
+name:'sree',
+age:29,
+lastname:'goud'
+        };
+        res.end(JSON.stringify(JsObj));
+    }
+ else if(req.url === '/about')
+ {
+   
+        res.writeHead(200,{'Content-Type':'text/html'});
+        fs.createReadStream('About.html').pipe(res);
+    
+ }
+ else{
+    res.writeHead(404,{'Content-Type':'text/html'});
+    fs.createReadStream('Error.html').pipe(res);
+ }
+}).listen(3000);
+console.log('log success');
+#########################INDEX.HTML###ABOUT.HTML#######ERROR.HTML
+##############EVENTS###############
+// var events = require('events');
+// var eventEmitter = new events.EclsventEmitter();
+// eventEmitter.on('clicked',function(){
+//     console.log("event is clicked");
+// });
+// eventEmitter.emit('clicked');
+var events = require('events');
+var util = require('util');
+var students = function(name){
+this.name = name;
+}
+util.inherits(students,events.EventEmitter);
+var stud = new  students('sree');
+stud.on('scores',function(marks){
+console.log(stud.name + ' scores '+marks);
+});
+stud.emit('scores',98);
+
+###########################################
