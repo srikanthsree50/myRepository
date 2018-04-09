@@ -1,0 +1,30 @@
+var express = require('express');
+var app = express();
+app.set('view engine','ejs');
+
+app.get('/',function(req,res){
+res.sendFile(__dirname + '/Index.html');
+});
+
+app.get('/about',function(req,res){
+    res.sendFile(__dirname + '/About.html');
+    });
+
+    app.get('/contact',function(req,res){
+        res.sendFile(__dirname + '/contact.html');
+        });
+
+var students = {
+1:'srikanth',
+2:'srilatha',
+3:'soundarya'
+};
+
+app.get('/students/:id',function(req,res){
+    res.render('students',{name:students[req.params.id]})
+    });
+
+app.listen(3000,function()
+{
+console.log("server is live on port");
+})
